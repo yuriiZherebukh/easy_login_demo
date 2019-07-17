@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from home.views import HomePage
+from easy_login_demo.home.views import HomePage
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
