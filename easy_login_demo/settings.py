@@ -4,8 +4,15 @@ import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# This settings should be overridden on remote server
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
+EASY_URL_REDIRECT = config('EASY_URL_REDIRECT', default='home', cast=str)
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 
 ALLOWED_HOSTS = ['*']
 
@@ -16,7 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'easy_login_demo.home'
+    'easy_login_demo.home',
+    'easy_login_demo.easy_login',
 ]
 
 MIDDLEWARE = [
@@ -34,7 +42,7 @@ ROOT_URLCONF = 'easy_login_demo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(os.path.dirname(__file__), 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -43,18 +51,13 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
+                'easy_login_demo.easy_login.context_processors.easy_login',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'easy_login_demo.wsgi.application'
-
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -88,3 +91,8 @@ STATIC_ROOT = 'staticfiles'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+try:
+    from django_easy_login.dev_settings import *
+except ImportError:
+    pass
